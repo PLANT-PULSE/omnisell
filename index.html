@@ -1,0 +1,4027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SellFlow - Social Commerce Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #FFC400;
+            --secondary: #2A5CAA;
+            --secondary-light: #3A8FE8;
+            --dark: #222222;
+            --light: #F8F9FA;
+            --gray: #6C757D;
+            --gray-light: #E9ECEF;
+            --success: #28A745;
+            --danger: #DC3545;
+            --warning: #FFC107;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 16px;
+            position: relative;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            padding-bottom: 80px;
+        }
+
+        .screen.active {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--dark);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--gray-light);
+            border: none;
+            color: var(--dark);
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 12px;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .nav-item.active {
+            color: var(--secondary);
+            background-color: rgba(58, 143, 232, 0.1);
+        }
+
+        .nav-item:hover {
+            color: var(--secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Cards */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        /* Onboarding Screen */
+        .onboarding-slide {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .onboarding-icon {
+            font-size: 80px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .onboarding-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+
+        .onboarding-desc {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 24px 0;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--gray-light);
+            transition: var(--transition);
+        }
+
+        .dot.active {
+            background-color: var(--primary);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* Dashboard */
+        .welcome-section {
+            padding: 20px 0;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .welcome-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .quick-actions {
+            margin-top: 24px;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            background-color: white;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quick-action-btn:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-action-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quick-action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 18px;
+        }
+
+        /* Product Upload */
+        .upload-area {
+            border: 2px dashed var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(255, 215, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-light);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        .preview-container {
+            margin-top: 20px;
+        }
+
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .social-preview {
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            background-color: white;
+        }
+
+        .social-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .social-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .social-platform {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .social-image {
+            width: 100%;
+            height: 200px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+        }
+
+        .social-caption {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .social-hashtags {
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        /* Chat System */
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background-color: white;
+            border-bottom: 1px solid var(--gray-light);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .chat-user-info h4 {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .chat-user-info p {
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .message-sent {
+            background-color: var(--primary);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-received {
+            background-color: white;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: var(--gray);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            background-color: white;
+            border-top: 1px solid var(--gray-light);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--gray-light);
+            font-size: 16px;
+        }
+
+        .chat-input button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            border: none;
+            color: var(--dark);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Analytics */
+        .chart-container {
+            margin-top: 20px;
+            height: 200px;
+            position: relative;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: flex-end;
+            height: 150px;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .chart-bar-item {
+            flex: 1;
+            background-color: var(--primary);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .metric-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: rgba(58, 143, 232, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-size: 20px;
+        }
+
+        .metric-info h4 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            padding: 24px 0;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--dark);
+            font-weight: 700;
+            position: relative;
+        }
+
+        .verification-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-handle {
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .profile-stat-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-light);
+            cursor: pointer;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: rgba(255, 215, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .card,
+        .dark-mode .header,
+        .dark-mode .bottom-nav,
+        .dark-mode .quick-action-btn,
+        .dark-mode .social-preview,
+        .dark-mode .chat-header,
+        .dark-mode .chat-input,
+        .dark-mode .settings-item {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .card-title,
+        .dark-mode .welcome-title,
+        .dark-mode .onboarding-title {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .form-control {
+            background-color: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .chat-messages {
+            background-color: #2a2a2a;
+        }
+
+        .dark-mode .message-received {
+            background-color: #2a2a2a;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .social-previews {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        /* Animation for notifications */
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 10000;
+            display: none;
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .dark-mode .notification {
+            background-color: #1e1e1e;
+        }
+
+        /* Loading States */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Cart Screen Styles */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .cart-item.selected {
+            border-color: var(--primary);
+            background-color: rgba(255, 215, 0, 0.1);
+        }
+
+        .cart-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: var(--transition);
+            color: transparent;
+            font-size: 12px;
+        }
+
+        .cart-item.selected .cart-checkbox {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+
+        .cart-product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFC400 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .cart-product-info {
+            flex: 1;
+        }
+
+        .cart-product-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+
+        .cart-product-info p {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+
+        .cart-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .cart-summary {
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .cart-summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .cart-total {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            padding-top: 16px;
+            margin-top: 8px;
+            border-top: 2px solid var(--gray);
+            border-bottom: none;
+        }
+
+        /* Payment Screen Styles */
+        .order-summary {
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-name {
+            font-weight: 500;
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .payment-form {
+            margin-top: 20px;
+        }
+
+        /* Dark mode cart/payment */
+        .dark-mode .cart-item {
+            background-color: #2a2a2a;
+        }
+
+        .dark-mode .cart-summary,
+        .dark-mode .order-summary {
+            background-color: #2a2a2a;
+        }
+
+        .dark-mode .cart-product-info h3,
+        .dark-mode .cart-total {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .order-item-name {
+            color: #e0e0e0;
+        }
+
+        /* Form Section Styles */
+        .form-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-title i {
+            color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .image-upload-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .image-upload-box {
+            border: 2px dashed var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-upload-box:hover {
+            border-color: var(--primary);
+            background-color: rgba(255, 215, 0, 0.05);
+        }
+
+        .image-upload-box.has-image {
+            padding: 0;
+            border-style: solid;
+            border-color: var(--primary);
+        }
+
+        .image-upload-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .image-upload-box i {
+            font-size: 32px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .image-upload-box p {
+            font-size: 12px;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        .image-upload-box .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .image-upload-box.has-image:hover .remove-image {
+            opacity: 1;
+        }
+
+        .char-counter {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .char-counter.warning {
+            color: var(--warning);
+        }
+
+        .char-counter.danger {
+            color: var(--danger);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236C757D' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        /* Product Card Styles */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            position: relative;
+        }
+
+        .product-card-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: var(--success);
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .product-card-content {
+            padding: 12px;
+        }
+
+        .product-card-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-card-desc {
+            font-size: 11px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-card-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .product-card-vendor {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--gray-light);
+            margin-top: 8px;
+        }
+
+        .product-card-vendor-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .product-card-vendor-info {
+            flex: 1;
+        }
+
+        .product-card-vendor-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .product-card-vendor-name i {
+            font-size: 10px;
+            color: var(--secondary);
+        }
+
+        .product-card-vendor-location {
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        .product-card-view-btn {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background-color: var(--gray-light);
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .product-card-view-btn:hover {
+            background-color: var(--primary);
+            color: var(--dark);
+        }
+
+        /* Vendor Store Profile Styles */
+        .vendor-store-profile {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--light);
+            z-index: 2000;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .vendor-store-profile.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .vendor-store-banner {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .vendor-store-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .vendor-store-close:hover {
+            background-color: var(--danger);
+        }
+
+        .vendor-store-content {
+            padding: 0 16px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .vendor-store-header {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .vendor-store-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: 4px solid white;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .vendor-store-info {
+            flex: 1;
+            padding-bottom: 8px;
+        }
+
+        .vendor-store-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vendor-store-verified {
+            width: 20px;
+            height: 20px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+
+        .vendor-store-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .vendor-store-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .vendor-store-meta-item i {
+            color: var(--secondary);
+        }
+
+        .vendor-store-description {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .vendor-store-description h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .vendor-store-description p {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .vendor-store-details {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .vendor-store-details h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        .vendor-store-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .vendor-store-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .vendor-store-detail-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .vendor-store-detail-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .vendor-store-products-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+
+        .dark-mode .form-section {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .product-card {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .product-card-name,
+        .dark-mode .product-card-vendor-name {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .vendor-store-description,
+        .dark-mode .vendor-store-details {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .vendor-store-detail-label,
+        .dark-mode .vendor-store-description p {
+            color: #aaa;
+        }
+
+        .dark-mode .vendor-store-detail-value,
+        .dark-mode .vendor-store-name {
+            color: #e0e0e0;
+        }
+
+        /* Product Slider Styles */
+        .product-slider-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            display: none;
+            justify-content: flex-end;
+        }
+
+        .product-slider-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .product-slider {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background-color: white;
+            overflow-y: auto;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .product-slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background-color: var(--secondary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .product-slider-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .product-slider-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-slider-content {
+            padding: 20px;
+        }
+
+        .product-slider-footer {
+            padding: 16px 20px;
+            background-color: var(--gray-light);
+            position: sticky;
+            bottom: 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .dark-mode .product-slider {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .product-slider-header {
+            background-color: var(--secondary-light);
+        }
+
+        /* Signup Screen Styles */
+        .signup-container {
+            padding: 20px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .signup-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            color: var(--dark);
+        }
+
+        .signup-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .signup-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .signup-form {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-upload-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .profile-upload-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px dashed var(--gray-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray);
+        }
+
+        .profile-upload-circle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .profile-upload-circle i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .profile-upload-circle span {
+            font-size: 12px;
+        }
+
+        .profile-upload-circle.has-image {
+            border-style: solid;
+            border-color: var(--primary);
+            overflow: hidden;
+        }
+
+        .profile-upload-circle.has-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-upload-circle.has-image i,
+        .profile-upload-circle.has-image span {
+            display: none;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .input-with-icon input {
+            padding-left: 44px;
+        }
+
+        .validation-hint {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background-color: var(--gray-light);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .strength-fill.weak { width: 20%; background-color: var(--danger); }
+        .strength-fill.fair { width: 40%; background-color: var(--warning); }
+        .strength-fill.good { width: 60%; background-color: var(--secondary); }
+        .strength-fill.strong { width: 80%; background-color: var(--secondary-light); }
+        .strength-fill.very-strong { width: 100%; background-color: var(--success); }
+
+        .strength-text {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+            display: block;
+        }
+
+        .password-requirements {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .req-item {
+            font-size: 11px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .req-item i {
+            font-size: 8px;
+            color: var(--gray);
+        }
+
+        .req-item.met i {
+            color: var(--success);
+        }
+
+        .req-item.met i::before {
+            content: '\f00c';
+        }
+
+        .password-input-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 16px;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .password-match {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--gray);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .password-match.match {
+            color: var(--success);
+            opacity: 1;
+        }
+
+        .password-match.match .fas {
+            font-size: 16px;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-light);
+            transition: var(--transition);
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--secondary);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toggle-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .toggle-desc {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .checkbox-label input {
+            display: none;
+        }
+
+        .checkbox-label .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-light);
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .checkbox-label input:checked + .checkmark {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkbox-label input:checked + .checkmark::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 12px;
+            color: var(--dark);
+        }
+
+        .checkbox-label a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .signup-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .signup-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: var(--gray-light);
+        }
+
+        .signup-divider span {
+            background-color: white;
+            padding: 0 16px;
+            color: var(--gray);
+            font-size: 14px;
+            position: relative;
+        }
+
+        .signup-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .signup-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dark-mode .signup-form {
+            background-color: #1e1e1e;
+        }
+
+        .dark-mode .signup-title {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .profile-upload-circle {
+            border-color: #444;
+        }
+
+        .dark-mode .toggle-title {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .signup-divider span {
+            background-color: #1e1e1e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification System -->
+    <div class="notification" id="notification">
+        <div class="notification-header">
+            <div class="notification-title" id="notification-title">New Message</div>
+            <button class="notification-close" onclick="hideNotification()">&times;</button>
+        </div>
+        <div class="notification-message" id="notification-message">You have a new message from Alex Johnson</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                Sell<span>Flow</span>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="icon-btn" id="notification-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screens -->
+        <!-- Onboarding Screen -->
+        <div class="screen active" id="onboarding-screen">
+            <div class="onboarding-slide" id="onboarding-slide-1">
+                <div class="onboarding-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h1 class="onboarding-title">Welcome to SellFlow</h1>
+                <p class="onboarding-desc">The all-in-one platform to sell your products across social media and marketplaces with just a few clicks.</p>
+                
+                <div class="dots-container">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="nextOnboardingSlide()">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="onboarding-slide" id="onboarding-slide-2" style="display: none;">
+                <div class="onboarding-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h1 class="onboarding-title">AI-Powered Marketing</h1>
+                <p class="onboarding-desc">Our AI generates perfect product descriptions, hashtags, and captions for all social platforms automatically.</p>
+                
+                <div class="dots-container">
+                    <div class="dot"></div>
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="nextOnboardingSlide()">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="onboarding-slide" id="onboarding-slide-3" style="display: none;">
+                <div class="onboarding-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h1 class="onboarding-title">Track & Optimize</h1>
+                <p class="onboarding-desc">Get detailed analytics on clicks, leads, and conversions to maximize your sales performance.</p>
+                
+                <div class="dots-container">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot active"></div>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="goToSignup()">
+                    Get Started <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Signup Screen -->
+        <div class="screen" id="signup-screen">
+            <div class="signup-container">
+                <div class="signup-header">
+                    <div class="signup-logo">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h1 class="signup-title">Create Your Account</h1>
+                    <p class="signup-subtitle">Join SellFlow and start selling today</p>
+                </div>
+                
+                <div class="signup-form">
+                    <!-- Profile Picture -->
+                    <div class="profile-upload-section">
+                        <div class="profile-upload-circle" id="signup-profile-upload" onclick="triggerSignupProfileUpload()">
+                            <i class="fas fa-camera"></i>
+                            <span>Add Photo</span>
+                            <input type="file" id="signup-profile-input" accept="image/*" style="display: none;" onchange="handleSignupProfileUpload(this)">
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label">Email Address <span style="color: var(--danger);">*</span></label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" class="form-control" id="signup-email" placeholder="prince.afful@gmail.com">
+                        </div>
+                        <div class="validation-hint" id="email-hint">We'll never share your email with anyone</div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label class="form-label">Password <span style="color: var(--danger);">*</span></label>
+                        <div class="input-with-icon password-input-container">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" class="form-control" id="signup-password" placeholder="G4l@xy!2026" oninput="validatePassword()">
+                            <button type="button" class="password-toggle" onclick="togglePassword('signup-password')">
+                                <i class="fas fa-eye" id="signup-password-icon"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strength-fill"></div>
+                            </div>
+                            <span class="strength-text" id="strength-text">Password strength</span>
+                        </div>
+                        <div class="password-requirements">
+                            <div class="req-item" id="req-length"><i class="fas fa-circle"></i> At least 12 characters</div>
+                            <div class="req-item" id="req-uppercase"><i class="fas fa-circle"></i> One uppercase letter</div>
+                            <div class="req-item" id="req-lowercase"><i class="fas fa-circle"></i> One lowercase letter</div>
+                            <div class="req-item" id="req-number"><i class="fas fa-circle"></i> One number</div>
+                            <div class="req-item" id="req-symbol"><i class="fas fa-circle"></i> One symbol (!@#$%^&*)</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password <span style="color: var(--danger);">*</span></label>
+                        <div class="input-with-icon password-input-container">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" class="form-control" id="signup-confirm-password" placeholder="Confirm your password" oninput="validateConfirmPassword()">
+                            <button type="button" class="password-toggle" onclick="togglePassword('signup-confirm-password')">
+                                <i class="fas fa-eye" id="signup-confirm-password-icon"></i>
+                            </button>
+                        </div>
+                        <div class="password-match" id="password-match">
+                            <i class="fas fa-check-circle" id="match-icon"></i>
+                            <span id="match-text">Passwords match</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label class="form-label">Username / Display Name <span style="color: var(--danger);">*</span></label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" class="form-control" id="signup-username" placeholder="YourName">
+                        </div>
+                    </div>
+                    
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label class="form-label">Phone Number <span style="color: var(--gray);">(Optional)</span></label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" class="form-control" id="signup-phone" placeholder="+233 50 123 4567">
+                        </div>
+                        <div class="validation-hint">Used for account recovery and 2FA</div>
+                    </div>
+                    
+                    <!-- Bio -->
+                    <div class="form-group">
+                        <label class="form-label">Bio / Description <span style="color: var(--gray);">(Optional)</span></label>
+                        <textarea class="form-control" rows="2" id="signup-bio" placeholder="Tell us about yourself or your business" maxlength="150"></textarea>
+                        <div class="char-counter" id="signup-bio-counter">0 / 150</div>
+                    </div>
+                    
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label class="form-label">Location <span style="color: var(--gray);">(Optional)</span></label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" class="form-control" id="signup-location" placeholder="Accra, Ghana">
+                        </div>
+                    </div>
+                    
+                    <!-- 2FA Toggle -->
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="signup-2fa" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                            <div class="toggle-text">
+                                <span class="toggle-title">Two-Factor Authentication (2FA)</span>
+                                <span class="toggle-desc">Add extra security to your account</span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <!-- Terms -->
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="signup-terms" checked>
+                            <span class="checkmark"></span>
+                            <span>I agree to the <a href="#" onclick="showNotification('Terms', 'Terms of Service')">Terms of Service</a> and <a href="#" onclick="showNotification('Privacy', 'Privacy Policy')">Privacy Policy</a></span>
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" onclick="completeSignup()">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                    
+                    <div class="signup-divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <button class="btn btn-secondary btn-block" onclick="showNotification('Social Login', 'Social login coming soon')">
+                        <i class="fab fa-google"></i> Continue with Google
+                    </button>
+                    
+                    <div class="signup-footer">
+                        Already have an account? <a href="#" onclick="showNotification('Login', 'Login feature coming soon')">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div class="screen" id="dashboard-screen">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Welcome back, Sarah!</h1>
+                <p class="welcome-subtitle">Here's your sales overview for today</p>
+                
+                <div class="stats-container">
+                    <div class="card stat-card">
+                        <div class="stat-value">$1,240</div>
+                        <div class="stat-label">Revenue</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">Products</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Clicks</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Leads</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <div class="card">
+                    <h2 class="card-title">Quick Actions</h2>
+                    
+                    <div class="quick-action-btn" onclick="navigateTo('products-screen')">
+                        <div class="quick-action-left">
+                            <div class="quick-action-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div>
+                                <h3>Add New Product</h3>
+                                <p>Upload and promote a product</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="quick-action-btn" onclick="showNotification('Scheduled', 'Your posts are scheduled for 2 PM today')">
+                        <div class="quick-action-left">
+                            <div class="quick-action-icon" style="background-color: var(--secondary); color: white;">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <h3>Schedule Posts</h3>
+                                <p>Plan social media content</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <div class="quick-action-btn" onclick="navigateTo('analytics-screen')">
+                        <div class="quick-action-left">
+                            <div class="quick-action-icon" style="background-color: var(--success); color: white;">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div>
+                                <h3>View Analytics</h3>
+                                <p>Check performance metrics</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Recent Activity</h2>
+                <div style="margin-top: 16px;">
+                    <div style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gray-light);">
+                        <div style="width: 40px; height: 40px; background-color: rgba(255, 215, 0, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                            <i class="fas fa-shopping-cart" style="color: var(--primary);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-weight: 600;">New order received</h4>
+                            <p style="font-size: 14px; color: var(--gray);">Alex Johnson purchased "Wireless Headphones"</p>
+                        </div>
+                        <div style="margin-left: auto; font-size: 12px; color: var(--gray);">2 min ago</div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gray-light);">
+                        <div style="width: 40px; height: 40px; background-color: rgba(58, 143, 232, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                            <i class="fas fa-share-alt" style="color: var(--secondary);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-weight: 600;">Post published</h4>
+                            <p style="font-size: 14px; color: var(--gray);">Your product is now live on Instagram</p>
+                        </div>
+                        <div style="margin-left: auto; font-size: 12px; color: var(--gray);">1 hour ago</div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; padding: 12px 0;">
+                        <div style="width: 40px; height: 40px; background-color: rgba(40, 167, 69, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                            <i class="fas fa-chart-line" style="color: var(--success);"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-weight: 600;">Performance increase</h4>
+                            <p style="font-size: 14px; color: var(--gray);">Your clicks increased by 24% today</p>
+                        </div>
+                        <div style="margin-left: auto; font-size: 12px; color: var(--gray);">3 hours ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Screen -->
+        <div class="screen" id="products-screen">
+            <!-- Business Identity Section - Now First -->
+            <div class="form-section">
+                <h2 class="form-section-title">
+                    <i class="fas fa-store"></i> Business Identity
+                </h2>
+                
+                <div class="image-upload-container">
+                    <div class="image-upload-box" id="business-logo-upload" onclick="triggerImageUpload('business-logo')">
+                        <i class="fas fa-image"></i>
+                        <p>Business Logo</p>
+                        <input type="file" id="business-logo-input" accept="image/*" style="display: none;" onchange="handleImageUpload(this, 'business-logo')">
+                        <div class="remove-image" onclick="event.stopPropagation(); removeImage('business-logo')">&times;</div>
+                    </div>
+                    <div class="image-upload-box" id="store-banner-upload" onclick="triggerImageUpload('store-banner')">
+                        <i class="fas fa-images"></i>
+                        <p>Store Banner</p>
+                        <input type="file" id="store-banner-input" accept="image/*" style="display: none;" onchange="handleImageUpload(this, 'store-banner')">
+                        <div class="remove-image" onclick="event.stopPropagation(); removeImage('store-banner')">&times;</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Business Name <span style="color: var(--danger);">*</span></label>
+                    <input type="text" class="form-control" placeholder="Enter your business name" value="TechGear Hub">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Business Description</label>
+                    <textarea class="form-control" rows="3" id="business-description" placeholder="Tell customers about your business (max 300 characters)" maxlength="300" oninput="updateCharCounter()">Your trusted source for premium tech accessories and gadgets. We provide quality products with excellent customer service.</textarea>
+                    <div class="char-counter" id="char-counter">87 / 300</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Business Category</label>
+                        <select class="form-control">
+                            <option value="">Select Category</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="fashion">Fashion & Apparel</option>
+                            <option value="home">Home & Garden</option>
+                            <option value="beauty">Beauty & Health</option>
+                            <option value="sports">Sports & Outdoors</option>
+                            <option value="toys">Toys & Games</option>
+                            <option value="food">Food & Beverages</option>
+                            <option value="other" selected>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Years in Business</label>
+                        <input type="number" class="form-control" placeholder="0" value="3">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Region</label>
+                        <select class="form-control">
+                            <option value="">Select Region</option>
+                            <option value="accra" selected>Greater Accra</option>
+                            <option value="ashanti">Ashanti</option>
+                            <option value="western">Western</option>
+                            <option value="eastern">Eastern</option>
+                            <option value="central">Central</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-control" placeholder="Enter city" value="Accra">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Registration Type</label>
+                    <select class="form-control">
+                        <option value="">Select Type</option>
+                        <option value="sole" selected>Sole Proprietor</option>
+                        <option value="registered">Registered Enterprise</option>
+                        <option value="informal">Informal Business</option>
+                        <option value="student">Student Trader</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Product Information Section - Now Second -->
+            <div class="form-section">
+                <h2 class="form-section-title">
+                    <i class="fas fa-box"></i> Product Information
+                </h2>
+                
+                <div class="upload-area" id="product-upload-area" onclick="triggerProductUpload()">
+                    <input type="file" id="product-image-input" accept="image/*,video/*" style="display: none;" onchange="handleProductUpload(this)">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drag & Drop or Click to Upload</h3>
+                    <p>Upload product images or videos (max 10 files)</p>
+                    <div id="product-upload-preview" style="margin-top: 16px; display: none;">
+                        <img id="preview-image" style="max-width: 100%; max-height: 200px; border-radius: 8px;" alt="Preview">
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary btn-block" onclick="openAddProductSlider()" style="margin-bottom: 20px;">
+                    <i class="fas fa-plus"></i> Add Another Product
+                </button>
+                
+                <div id="product-count-display" style="text-align: center; color: var(--gray); margin-bottom: 16px; font-size: 14px;">
+                    Products added: 0 / 10
+                </div>
+            </div>
+            
+            <!-- Your Products Section - Now Third -->
+            <div class="form-section">
+                <h2 class="form-section-title">
+                    <i class="fas fa-th-large"></i> Your Products
+                </h2>
+                
+                <div id="empty-products-message" style="text-align: center; padding: 40px 20px; color: var(--gray);">
+                    <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 16px;"></i>
+                    <p>No products added yet</p>
+                    <p style="font-size: 12px;">Upload a product image and click "Add Another Product" to add your first product</p>
+                </div>
+                
+                <div class="product-grid" id="product-grid" style="display: none;">
+                    <!-- Products will be dynamically rendered here -->
+                </div>
+            </div>
+            
+            <!-- Social Media Preview Section - Now Last -->
+            <div class="preview-container">
+                <div class="card">
+                    <h2 class="card-title">Social Media Previews</h2>
+                    <p style="margin-bottom: 16px; color: var(--gray);">AI-generated previews for different platforms</p>
+                    
+                    <div class="social-previews">
+                        <div class="social-preview">
+                            <div class="social-header">
+                                <div class="social-avatar">FB</div>
+                                <div>
+                                    <div class="social-platform">Facebook</div>
+                                    <div style="font-size: 12px; color: var(--gray);">SellFlow • Sponsored</div>
+                                </div>
+                            </div>
+                            <div class="social-caption">🎧 Just launched! Premium wireless headphones with noise cancellation and 30-hour battery life. Perfect for work, travel, or relaxing with your favorite tunes. #WirelessHeadphones #TechGadgets</div>
+                            <div class="social-image">
+                                <i class="fas fa-headphones" style="font-size: 48px;"></i>
+                            </div>
+                            <div class="social-hashtags">#AudioTech #Bluetooth #MusicLovers #NewProduct</div>
+                        </div>
+                        
+                        <div class="social-preview">
+                            <div class="social-header">
+                                <div class="social-avatar" style="background: linear-gradient(45deg, #405DE6, #833AB4);">IG</div>
+                                <div>
+                                    <div class="social-platform">Instagram</div>
+                                    <div style="font-size: 12px; color: var(--gray);">sellflow • Promoted</div>
+                                </div>
+                            </div>
+                            <div class="social-caption">Level up your audio game 🎶 New wireless headphones dropping now! 30-hour battery, noise cancellation, super comfortable. Link in bio! 👆</div>
+                            <div class="social-image">
+                                <i class="fas fa-headphones" style="font-size: 48px;"></i>
+                            </div>
+                            <div class="social-hashtags">#WirelessHeadphones #Audio #Tech #Gadgets #Music #Bluetooth #Headphones</div>
+                        </div>
+                        
+                        <!-- Twitter Preview -->
+                        <div class="social-preview">
+                            <div class="social-header">
+                                <div class="social-avatar" style="background-color: #1DA1F2;">TW</div>
+                                <div>
+                                    <div class="social-platform">Twitter</div>
+                                    <div style="font-size: 12px; color: var(--gray);">sellflow • Promoted</div>
+                                </div>
+                            </div>
+                            <div class="social-caption">🎧 Premium wireless headphones just dropped! ANC, 30-hour battery, premium sound quality. Get yours now! #TechGadgets #AudioTech</div>
+                            <div class="social-image">
+                                <i class="fas fa-headphones" style="font-size: 48px;"></i>
+                            </div>
+                            <div class="social-hashtags">#WirelessHeadphones #NewLaunch #MusicLovers #GamingGear</div>
+                        </div>
+                        
+                        <!-- WhatsApp Preview -->
+                        <div class="social-preview">
+                            <div class="social-header">
+                                <div class="social-avatar" style="background-color: #25D366;">WA</div>
+                                <div>
+                                    <div class="social-platform">WhatsApp</div>
+                                    <div style="font-size: 12px; color: var(--gray);">SellFlow • Business</div>
+                                </div>
+                            </div>
+                            <div class="social-caption">🎉 New Product Alert! Premium Wireless Headphones now available. DM to order or click the link below to purchase. Limited stock! 📦</div>
+                            <div class="social-image">
+                                <i class="fas fa-headphones" style="font-size: 48px;"></i>
+                            </div>
+                            <div class="social-hashtags">#WirelessHeadphones #BuyNow #TechDeals</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-secondary btn-block" style="margin-top: 20px;">
+                        <i class="fas fa-share-alt"></i> Publish to All Platforms
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div class="screen" id="chat-screen">
+            <div class="card chat-container">
+                <div class="chat-header">
+                    <div class="chat-avatar">AJ</div>
+                    <div class="chat-user-info">
+                        <h4>Alex Johnson</h4>
+                        <p>Online now</p>
+                    </div>
+                    <div style="margin-left: auto; display: flex; gap: 8px;">
+                        <button class="icon-btn" style="width: 36px; height: 36px;" onclick="showNotification('Call', 'Starting video call with Alex Johnson')">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="icon-btn" style="width: 36px; height: 36px;" onclick="showNotification('Call', 'Starting voice call with Alex Johnson')">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message message-received">
+                        Hi, I'm interested in the wireless headphones. Do they come with a carrying case?
+                        <div class="message-time">10:24 AM</div>
+                    </div>
+                    
+                    <div class="message message-sent">
+                        Yes, they come with a premium carrying case and charging cable.
+                        <div class="message-time">10:25 AM</div>
+                    </div>
+                    
+                    <div class="message message-sent">
+                        <div style="background-color: white; padding: 12px; border-radius: 12px; margin-bottom: 8px;">
+                            <div style="display: flex; gap: 12px;">
+                                <div style="width: 60px; height: 60px; background-color: var(--gray-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-headphones" style="font-size: 24px; color: var(--gray);"></i>
+                                </div>
+                                <div>
+                                    <h4 style="font-weight: 600; margin-bottom: 4px;">Wireless Headphones</h4>
+                                    <p style="font-size: 14px; color: var(--gray); margin-bottom: 4px;">Noise cancellation, 30-hour battery</p>
+                                    <div style="font-weight: 700; color: var(--dark);">$89.99</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="message-time">10:25 AM</div>
+                    </div>
+                    
+                    <div class="message message-received">
+                        Great! And what's the warranty period?
+                        <div class="message-time">10:26 AM</div>
+                    </div>
+                    
+                    <div class="message message-sent">
+                        They come with a 1-year manufacturer warranty. We also offer 30-day returns if you're not satisfied.
+                        <div class="message-time">10:27 AM</div>
+                    </div>
+                    
+                    <div class="message message-received">
+                        Perfect. I'll take them! How do I proceed with the purchase?
+                        <div class="message-time">10:28 AM</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message..." id="chat-input">
+                    <button class="icon-btn" onclick="sendMessage()" style="width: 50px; height: 50px; background-color: var(--primary);">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 16px;">
+                <h2 class="card-title">AI Reply Suggestions</h2>
+                <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                    <button class="btn" style="padding: 8px 16px; font-size: 14px; background-color: var(--gray-light);" onclick="useAISuggestion('Yes, they come with a 1-year warranty.')">1-year warranty</button>
+                    <button class="btn" style="padding: 8px 16px; font-size: 14px; background-color: var(--gray-light);" onclick="useAISuggestion('We offer free shipping on orders over $50.')">Free shipping info</button>
+                    <button class="btn" style="padding: 8px 16px; font-size: 14px; background-color: var(--gray-light);" onclick="useAISuggestion('You can purchase directly through this chat using our secure payment system.')">Purchase instructions</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Screen -->
+        <div class="screen" id="analytics-screen">
+            <div class="card">
+                <h2 class="card-title">Performance Overview</h2>
+                <p style="margin-bottom: 20px; color: var(--gray);">Last 7 days performance metrics</p>
+                
+                <div class="chart-container">
+                    <div class="chart-bar">
+                        <div class="chart-bar-item" style="height: 40%;">
+                            <div class="chart-label">Mon</div>
+                        </div>
+                        <div class="chart-bar-item" style="height: 70%;">
+                            <div class="chart-label">Tue</div>
+                        </div>
+                        <div class="chart-bar-item" style="height: 90%;">
+                            <div class="chart-label">Wed</div>
+                        </div>
+                        <div class="chart-bar-item" style="height: 60%;">
+                            <div class="chart-label">Thu</div>
+                        </div>
+                        <div class="chart-bar-item" style="height: 100%;">
+                            <div class="chart-label">Fri</div>
+                        </div>
+                        <div class="chart-bar-item" style="height: 80%;">
+                            <div class="chart-label">Sat</div>
+                        </div>
+                        <div class="chart-bar-item" style="height: 95%;">
+                            <div class="chart-label">Sun</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Platform Engagement</h2>
+                <div style="margin-top: 16px;">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="metric-info">
+                            <h4>Facebook</h4>
+                            <div class="metric-value">1,240 clicks</div>
+                        </div>
+                        <div style="margin-left: auto; color: var(--success); font-weight: 600;">+12%</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background-color: rgba(255, 87, 34, 0.1); color: #FF5722;">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div class="metric-info">
+                            <h4>Instagram</h4>
+                            <div class="metric-value">2,156 clicks</div>
+                        </div>
+                        <div style="margin-left: auto; color: var(--success); font-weight: 600;">+24%</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background-color: rgba(29, 161, 242, 0.1); color: #1DA1F2;">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                        <div class="metric-info">
+                            <h4>Twitter</h4>
+                            <div class="metric-value">842 clicks</div>
+                        </div>
+                        <div style="margin-left: auto; color: var(--danger); font-weight: 600;">-3%</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background-color: rgba(37, 211, 102, 0.1); color: #25D366;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="metric-info">
+                            <h4>WhatsApp</h4>
+                            <div class="metric-value">523 leads</div>
+                        </div>
+                        <div style="margin-left: auto; color: var(--success); font-weight: 600;">+18%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Conversion Summary</h2>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--secondary);">4.2%</div>
+                        <div style="font-size: 14px; color: var(--gray);">Click-to-Lead Rate</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--primary);">12.8%</div>
+                        <div style="font-size: 14px; color: var(--gray);">Lead-to-Sale Rate</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--success);">$89.99</div>
+                        <div style="font-size: 14px; color: var(--gray);">Average Order Value</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div class="screen" id="profile-screen">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    SJ
+                    <div class="verification-badge">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <h1 class="profile-name">Sarah Johnson</h1>
+                <p class="profile-handle">@sarahj_seller</p>
+                
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">42</div>
+                        <div class="profile-stat-label">Products</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">4.8</div>
+                        <div class="profile-stat-label">Rating</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">98%</div>
+                        <div class="profile-stat-label">Positive</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Account Settings</h2>
+                
+                <div class="settings-item" onclick="showNotification('Theme', 'Theme switched')">
+                    <div class="settings-left">
+                        <div class="settings-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div>
+                            <h3>Theme</h3>
+                            <p>Dark/Light mode</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="settings-item" onclick="showNotification('Notifications', 'Notification settings opened')">
+                    <div class="settings-left">
+                        <div class="settings-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div>
+                            <h3>Notifications</h3>
+                            <p>Manage alerts</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="settings-item" onclick="showNotification('Payment', 'Payment settings opened')">
+                    <div class="settings-left">
+                        <div class="settings-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <h3>Payment Methods</h3>
+                            <p>Add or update payment info</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="settings-item" onclick="showNotification('Marketplaces', 'Marketplace integrations opened')">
+                    <div class="settings-left">
+                        <div class="settings-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div>
+                            <h3>Marketplace Integrations</h3>
+                            <p>Jumia, Alibaba, AliExpress</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="settings-item" onclick="showNotification('Help', 'Help center opened')">
+                    <div class="settings-left">
+                        <div class="settings-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div>
+                            <h3>Help & Support</h3>
+                            <p>FAQ, contact us</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="settings-item" onclick="showNotification('Logout', 'You have been logged out')">
+                    <div class="settings-left">
+                        <div class="settings-icon" style="background-color: rgba(220, 53, 69, 0.1); color: var(--danger);">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <div>
+                            <h3 style="color: var(--danger);">Log Out</h3>
+                            <p>Sign out of your account</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Connected Platforms</h2>
+                <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+                    <div style="text-align: center;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(45deg, #4267B2, #898F9C); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; margin: 0 auto 8px;">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div style="font-size: 12px; font-weight: 600;">Facebook</div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(45deg, #833AB4, #FD1D1D, #FCAF45); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; margin: 0 auto 8px;">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div style="font-size: 12px; font-weight: 600;">Instagram</div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <div style="width: 50px; height: 50px; background-color: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; margin: 0 auto 8px;">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                        <div style="font-size: 12px; font-weight: 600;">Twitter</div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <div style="width: 50px; height: 50px; background-color: #25D366; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; margin: 0 auto 8px;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div style="font-size: 12px; font-weight: 600;">WhatsApp</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Screen -->
+        <div class="screen" id="cart-screen">
+            <div class="card">
+                <h2 class="card-title">Shopping Cart</h2>
+                <p style="margin-bottom: 20px; color: var(--gray);">Select products to purchase</p>
+                
+                <!-- Cart Products -->
+                <div id="cart-products">
+                    <!-- Product 1 -->
+                    <div class="cart-item" onclick="toggleCartItem(this)" data-price="89.99">
+                        <div class="cart-checkbox">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="cart-product-image">
+                            <i class="fas fa-headphones"></i>
+                        </div>
+                        <div class="cart-product-info">
+                            <h3>Wireless Headphones</h3>
+                            <p>Noise cancellation, 30-hour battery</p>
+                            <div class="cart-price">$89.99</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 2 -->
+                    <div class="cart-item" onclick="toggleCartItem(this)" data-price="149.99">
+                        <div class="cart-checkbox">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="cart-product-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="cart-product-info">
+                            <h3>Smartphone Pro</h3>
+                            <p>128GB, 6.5" Display, 5G</p>
+                            <div class="cart-price">$149.99</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 3 -->
+                    <div class="cart-item" onclick="toggleCartItem(this)" data-price="29.99">
+                        <div class="cart-checkbox">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="cart-product-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-watch"></i>
+                        </div>
+                        <div class="cart-product-info">
+                            <h3>Smart Watch</h3>
+                            <p>Fitness tracker, heart rate monitor</p>
+                            <div class="cart-price">$29.99</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 4 -->
+                    <div class="cart-item" onclick="toggleCartItem(this)" data-price="59.99">
+                        <div class="cart-checkbox">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="cart-product-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <div class="cart-product-info">
+                            <h3>Wireless Speaker</h3>
+                            <p>360° sound, waterproof</p>
+                            <div class="cart-price">$59.99</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 5 -->
+                    <div class="cart-item" onclick="toggleCartItem(this)" data-price="19.99">
+                        <div class="cart-checkbox">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="cart-product-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="fas fa-charging-station"></i>
+                        </div>
+                        <div class="cart-product-info">
+                            <h3>Fast Charger</h3>
+                            <p>65W, USB-C, travel adapter</p>
+                            <div class="cart-price">$19.99</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cart Summary -->
+                <div class="cart-summary">
+                    <div class="cart-summary-row">
+                        <span>Selected Items</span>
+                        <span id="selected-count">0</span>
+                    </div>
+                    <div class="cart-summary-row">
+                        <span>Subtotal</span>
+                        <span id="cart-subtotal">$0.00</span>
+                    </div>
+                    <div class="cart-summary-row">
+                        <span>Tax (10%)</span>
+                        <span id="cart-tax">$0.00</span>
+                    </div>
+                    <div class="cart-summary-row cart-total">
+                        <span>Total</span>
+                        <span id="cart-total">$0.00</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="proceedToPayment()">
+                    <i class="fas fa-credit-card"></i> Proceed to Payment
+                </button>
+            </div>
+        </div>
+
+        <!-- Payment Screen -->
+        <div class="screen" id="payment-screen">
+            <div class="card">
+                <h2 class="card-title">Payment</h2>
+                <p style="margin-bottom: 20px; color: var(--gray);">Complete your purchase</p>
+                
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h3 style="margin-bottom: 16px;">Order Summary</h3>
+                    <div id="payment-order-items">
+                        <!-- Items will be populated by JS -->
+                    </div>
+                    <div class="cart-summary-row">
+                        <span>Subtotal</span>
+                        <span id="payment-subtotal">$0.00</span>
+                    </div>
+                    <div class="cart-summary-row">
+                        <span>Tax (10%)</span>
+                        <span id="payment-tax">$0.00</span>
+                    </div>
+                    <div class="cart-summary-row cart-total">
+                        <span>Total</span>
+                        <span id="payment-total">$0.00</span>
+                    </div>
+                </div>
+                
+                <!-- Payment Form -->
+                <div class="payment-form">
+                    <h3 style="margin: 24px 0 16px;">Payment Details</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Card Number</label>
+                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV</label>
+                            <input type="text" class="form-control" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cardholder Name</label>
+                        <input type="text" class="form-control" placeholder="Sarah Johnson">
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" onclick="processPayment()">
+                        <i class="fas fa-lock"></i> Pay Now
+                    </button>
+                    
+                    <p style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--gray);">
+                        <i class="fas fa-shield-alt"></i> Your payment is secure and encrypted
+                    </p>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary btn-block" onclick="navigateTo('cart-screen')" style="margin-top: 16px;">
+                <i class="fas fa-arrow-left"></i> Back to Cart
+            </button>
+        </div>
+
+        <!-- Vendor Store Profile Modal -->
+        <div class="vendor-store-profile" id="vendor-store-profile">
+            <div class="vendor-store-banner">
+                <div class="vendor-store-close" onclick="closeStoreProfile()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="container" style="padding-top: 0;">
+                <div class="vendor-store-content">
+                    <div class="vendor-store-header">
+                        <div class="vendor-store-logo" id="vendor-logo">TG</div>
+                        <div class="vendor-store-info">
+                            <div class="vendor-store-name" id="vendor-name">
+                                TechGear Hub
+                                <span class="vendor-store-verified" id="vendor-verified-badge"><i class="fas fa-check"></i></span>
+                            </div>
+                            <div class="vendor-store-meta">
+                                <div class="vendor-store-meta-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span id="vendor-location">Accra, Ghana</span>
+                                </div>
+                                <div class="vendor-store-meta-item">
+                                    <i class="fas fa-tag"></i>
+                                    <span id="vendor-category">Electronics</span>
+                                </div>
+                                <div class="vendor-store-meta-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span id="vendor-years">3 years</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vendor-store-description">
+                        <h3>About Us</h3>
+                        <p id="vendor-description">Your trusted source for premium tech accessories and gadgets. We provide quality products with excellent customer service.</p>
+                    </div>
+                    
+                    <div class="vendor-store-details">
+                        <h3>Business Details</h3>
+                        <div class="vendor-store-detail-row">
+                            <span class="vendor-store-detail-label">Registration Type</span>
+                            <span class="vendor-store-detail-value" id="vendor-registration">Sole Proprietor</span>
+                        </div>
+                        <div class="vendor-store-detail-row">
+                            <span class="vendor-store-detail-label">Total Products</span>
+                            <span class="vendor-store-detail-value">24</span>
+                        </div>
+                        <div class="vendor-store-detail-row">
+                            <span class="vendor-store-detail-label">Rating</span>
+                            <span class="vendor-store-detail-value">4.8 ★</span>
+                        </div>
+                        <div class="vendor-store-detail-row">
+                            <span class="vendor-store-detail-label">Response Time</span>
+                            <span class="vendor-store-detail-value">Within 1 hour</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="vendor-store-products-title">More Products from this Vendor</h3>
+                    <div class="product-grid" id="vendor-products-grid">
+                        <!-- Products will be dynamically rendered -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Product Slider for Adding Products -->
+        <div class="product-slider-overlay" id="product-slider-overlay">
+            <div class="product-slider">
+                <div class="product-slider-header">
+                    <h3>Add Product <span id="slider-product-number">(1)</span></h3>
+                    <button class="product-slider-close" onclick="closeAddProductSlider()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="product-slider-content">
+                    <div class="upload-area" id="slider-product-upload" onclick="triggerSliderProductUpload()">
+                        <input type="file" id="slider-product-image-input" accept="image/*" style="display: none;" onchange="handleSliderProductUpload(this)">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3>Product Image</h3>
+                        <p>Click to upload</p>
+                        <div id="slider-product-preview" style="margin-top: 16px; display: none;">
+                            <img id="slider-preview-image" style="max-width: 100%; max-height: 150px; border-radius: 8px;" alt="Preview">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Product Name <span style="color: var(--danger);">*</span></label>
+                        <input type="text" class="form-control" id="slider-product-name" placeholder="Enter product name">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price <span style="color: var(--danger);">*</span></label>
+                            <input type="text" class="form-control" id="slider-product-price" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="slider-product-stock" placeholder="0" value="50">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Short Description</label>
+                        <textarea class="form-control" rows="2" id="slider-product-desc" placeholder="Brief product description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Full Description (AI-generated)</label>
+                        <textarea class="form-control" rows="3" id="slider-product-full-desc" placeholder="AI will generate description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Hashtags</label>
+                        <input type="text" class="form-control" id="slider-product-hashtags" placeholder="#Product #Sale #New">
+                    </div>
+                </div>
+                <div class="product-slider-footer">
+                    <button class="btn btn-secondary" onclick="closeAddProductSlider()" style="flex: 1;">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveProduct()" style="flex: 1;">
+                        <i class="fas fa-check"></i> Add Product
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="navigateTo('dashboard-screen'); return false;">
+            <i class="fas fa-home"></i>
+            Dashboard
+        </a>
+        <a href="#" class="nav-item" onclick="navigateTo('products-screen'); return false;">
+            <i class="fas fa-box"></i>
+            Products
+        </a>
+        <a href="#" class="nav-item" onclick="navigateTo('cart-screen'); return false;">
+            <i class="fas fa-shopping-cart"></i>
+            Cart
+        </a>
+        <a href="#" class="nav-item" onclick="navigateTo('chat-screen'); return false;">
+            <i class="fas fa-comments"></i>
+            Chat
+        </a>
+        <a href="#" class="nav-item" onclick="navigateTo('analytics-screen'); return false;">
+            <i class="fas fa-chart-line"></i>
+            Analytics
+        </a>
+        <a href="#" class="nav-item" onclick="navigateTo('profile-screen'); return false;">
+            <i class="fas fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script>
+        // Screen management
+        let currentScreen = 'onboarding-screen';
+        let isSignedUp = false;
+        
+        function navigateTo(screenId) {
+            // Check if user is signed up before accessing protected screens
+            const protectedScreens = ['dashboard-screen', 'products-screen', 'cart-screen', 'chat-screen', 'analytics-screen', 'profile-screen'];
+            
+            if (protectedScreens.includes(screenId) && !isSignedUp) {
+                showNotification('Sign Up Required', 'Please create an account first');
+                navigateTo('signup-screen');
+                return;
+            }
+            
+            // Hide current screen
+            document.getElementById(currentScreen).classList.remove('active');
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show new screen
+            document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+            
+            // Update nav item if not onboarding or signup
+            if (screenId !== 'onboarding-screen' && screenId !== 'signup-screen') {
+                const navItems = {
+                    'dashboard-screen': 0,
+                    'products-screen': 1,
+                    'cart-screen': 2,
+                    'chat-screen': 3,
+                    'analytics-screen': 4,
+                    'profile-screen': 5
+                };
+                
+                if (navItems[screenId] !== undefined) {
+                    document.querySelectorAll('.nav-item')[navItems[screenId]].classList.add('active');
+                }
+            }
+        }
+
+        // Cart functionality
+        let selectedItems = [];
+        
+        function toggleCartItem(element) {
+            const price = parseFloat(element.dataset.price);
+            const name = element.querySelector('.cart-product-info h3').textContent;
+            const priceText = element.querySelector('.cart-price').textContent;
+            
+            if (element.classList.contains('selected')) {
+                // Remove from selected
+                element.classList.remove('selected');
+                selectedItems = selectedItems.filter(item => item.name !== name);
+            } else {
+                // Add to selected
+                element.classList.add('selected');
+                selectedItems.push({
+                    name: name,
+                    price: price,
+                    priceText: priceText
+                });
+            }
+            
+            updateCartSummary();
+        }
+        
+        function updateCartSummary() {
+            const subtotal = selectedItems.reduce((sum, item) => sum + item.price, 0);
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+            
+            document.getElementById('selected-count').textContent = selectedItems.length;
+            document.getElementById('cart-subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('cart-tax').textContent = '$' + tax.toFixed(2);
+            document.getElementById('cart-total').textContent = '$' + total.toFixed(2);
+        }
+        
+        function proceedToPayment() {
+            if (selectedItems.length === 0) {
+                showNotification('Cart Empty', 'Please select at least one product');
+                return;
+            }
+            
+            // Populate payment order summary
+            const orderItemsContainer = document.getElementById('payment-order-items');
+            orderItemsContainer.innerHTML = '';
+            
+            let subtotal = 0;
+            selectedItems.forEach(item => {
+                subtotal += item.price;
+                orderItemsContainer.innerHTML += `
+                    <div class="order-item">
+                        <span class="order-item-name">${item.name}</span>
+                        <span class="order-item-price">${item.priceText}</span>
+                    </div>
+                `;
+            });
+            
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+            
+            document.getElementById('payment-subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('payment-tax').textContent = '$' + tax.toFixed(2);
+            document.getElementById('payment-total').textContent = '$' + total.toFixed(2);
+            
+            navigateTo('payment-screen');
+        }
+        
+        function processPayment() {
+            // Simulate payment processing
+            showNotification('Processing', 'Processing your payment...');
+            
+            setTimeout(() => {
+                showNotification('Success', 'Payment successful! Thank you for your order.');
+                
+                // Clear cart
+                selectedItems = [];
+                document.querySelectorAll('.cart-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                updateCartSummary();
+                
+                // Navigate back to dashboard
+                setTimeout(() => {
+                    navigateTo('dashboard-screen');
+                }, 2000);
+            }, 2000);
+        }
+        
+        // Onboarding
+        let currentOnboardingSlide = 1;
+        
+        function nextOnboardingSlide() {
+            document.getElementById(`onboarding-slide-${currentOnboardingSlide}`).style.display = 'none';
+            currentOnboardingSlide++;
+            document.getElementById(`onboarding-slide-${currentOnboardingSlide}`).style.display = 'block';
+        }
+        
+        function goToSignup() {
+            navigateTo('signup-screen');
+        }
+        
+        function completeOnboarding() {
+            navigateTo('dashboard-screen');
+        }
+        
+        // Signup Functions
+        function validatePassword() {
+            const password = document.getElementById('signup-password').value;
+            
+            // Check requirements
+            const hasLength = password.length >= 12;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            
+            // Update requirement indicators
+            document.getElementById('req-length').classList.toggle('met', hasLength);
+            document.getElementById('req-uppercase').classList.toggle('met', hasUppercase);
+            document.getElementById('req-lowercase').classList.toggle('met', hasLowercase);
+            document.getElementById('req-number').classList.toggle('met', hasNumber);
+            document.getElementById('req-symbol').classList.toggle('met', hasSymbol);
+            
+            // Calculate strength
+            let strength = 0;
+            if (hasLength) strength++;
+            if (hasUppercase) strength++;
+            if (hasLowercase) strength++;
+            if (hasNumber) strength++;
+            if (hasSymbol) strength++;
+            
+            const strengthFill = document.getElementById('strength-fill');
+            const strengthText = document.getElementById('strength-text');
+            
+            strengthFill.className = 'strength-fill';
+            if (strength === 0) {
+                strengthText.textContent = 'Password strength';
+            } else if (strength === 1) {
+                strengthFill.classList.add('weak');
+                strengthText.textContent = 'Weak';
+            } else if (strength === 2) {
+                strengthFill.classList.add('fair');
+                strengthText.textContent = 'Fair';
+            } else if (strength === 3) {
+                strengthFill.classList.add('good');
+                strengthText.textContent = 'Good';
+            } else if (strength === 4) {
+                strengthFill.classList.add('strong');
+                strengthText.textContent = 'Strong';
+            } else if (strength === 5) {
+                strengthFill.classList.add('very-strong');
+                strengthText.textContent = 'Very Strong';
+            }
+            
+            // Also validate confirm password if it has value
+            validateConfirmPassword();
+            
+            return {
+                hasLength,
+                hasUppercase,
+                hasLowercase,
+                hasNumber,
+                hasSymbol,
+                isValid: hasLength && hasUppercase && hasLowercase && hasNumber && hasSymbol
+            };
+        }
+        
+        function validateConfirmPassword() {
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const matchDiv = document.getElementById('password-match');
+            const matchIcon = document.getElementById('match-icon');
+            const matchText = document.getElementById('match-text');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.classList.remove('match');
+                matchText.textContent = 'Passwords match';
+                return false;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.classList.add('match');
+                matchIcon.className = 'fas fa-check-circle';
+                matchText.textContent = 'Passwords match!';
+                return true;
+            } else {
+                matchDiv.classList.remove('match');
+                matchIcon.className = 'fas fa-times-circle';
+                matchText.textContent = 'Passwords do not match';
+                return false;
+            }
+        }
+        
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + '-icon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+        
+        function triggerSignupProfileUpload() {
+            document.getElementById('signup-profile-input').click();
+        }
+        
+        function handleSignupProfileUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = document.getElementById('signup-profile-upload');
+                    container.classList.add('has-image');
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    container.insertBefore(img, container.firstChild);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function completeSignup() {
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const username = document.getElementById('signup-username').value.trim();
+            const phone = document.getElementById('signup-phone').value.trim();
+            const bio = document.getElementById('signup-bio').value.trim();
+            const location = document.getElementById('signup-location').value.trim();
+            const terms = document.getElementById('signup-terms').checked;
+            const twoFA = document.getElementById('signup-2fa').checked;
+            
+            // Get profile picture if uploaded
+            const profileImg = document.querySelector('#signup-profile-upload img');
+            const profileImageSrc = profileImg ? profileImg.src : null;
+            
+            // Validate required fields
+            if (!email) {
+                showNotification('Error', 'Please enter your email address');
+                return;
+            }
+            
+            if (!password) {
+                showNotification('Error', 'Please enter a password');
+                return;
+            }
+            
+            // Validate password strength
+            const passwordValidation = validatePassword();
+            if (!passwordValidation.isValid) {
+                showNotification('Error', 'Please meet all password requirements');
+                return;
+            }
+            
+            // Validate password match
+            if (!validateConfirmPassword()) {
+                showNotification('Error', 'Passwords do not match');
+                return;
+            }
+            
+            if (!username) {
+                showNotification('Error', 'Please enter a username');
+                return;
+            }
+            
+            if (!terms) {
+                showNotification('Error', 'Please agree to the Terms of Service');
+                return;
+            }
+            
+            // Save user data to localStorage
+            const userData = {
+                email,
+                username,
+                password,
+                phone,
+                bio,
+                location,
+                twoFA,
+                profileImage: profileImageSrc,
+                isLoggedIn: true
+            };
+            localStorage.setItem('sellflow_user', JSON.stringify(userData));
+            
+            // Simulate account creation
+            showNotification('Creating Account', 'Please wait...');
+            
+            setTimeout(() => {
+                isSignedUp = true;
+                
+                // Update welcome message with username
+                const welcomeTitle = document.querySelector('#dashboard-screen .welcome-title');
+                if (welcomeTitle) {
+                    welcomeTitle.textContent = `Welcome back, ${username}!`;
+                }
+                
+                // Update profile with user info
+                const profileName = document.querySelector('#profile-screen .profile-name');
+                const profileHandle = document.querySelector('#profile-screen .profile-handle');
+                const profileAvatar = document.querySelector('#profile-screen .profile-avatar');
+                
+                if (profileName) {
+                    profileName.textContent = username;
+                }
+                if (profileHandle) {
+                    profileHandle.textContent = `@${username.toLowerCase().replace(/\s/g, '')}`;
+                }
+                
+                // Update profile picture if uploaded
+                if (profileAvatar && profileImageSrc) {
+                    profileAvatar.style.backgroundImage = `url('${profileImageSrc}')`;
+                    profileAvatar.style.backgroundSize = 'cover';
+                    profileAvatar.style.backgroundPosition = 'center';
+                    profileAvatar.textContent = '';
+                    profileAvatar.style.color = 'transparent';
+                }
+                
+                showNotification('Account Created', `Welcome to SellFlow, ${username}!`);
+                navigateTo('dashboard-screen');
+            }, 1500);
+        }
+        
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.className = 'fas fa-sun';
+                showNotification('Theme', 'Dark mode enabled');
+            } else {
+                icon.className = 'fas fa-moon';
+                showNotification('Theme', 'Light mode enabled');
+            }
+        });
+        
+        // Notification system
+        function showNotification(title, message) {
+            const notification = document.getElementById('notification');
+            const notificationTitle = document.getElementById('notification-title');
+            const notificationMessage = document.getElementById('notification-message');
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            notification.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(hideNotification, 5000);
+        }
+        
+        function hideNotification() {
+            document.getElementById('notification').classList.remove('show');
+        }
+        
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Create new message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-sent';
+            messageDiv.innerHTML = `
+                ${message}
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            input.value = '';
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate AI reply after 1 second
+            setTimeout(() => {
+                const aiReplyDiv = document.createElement('div');
+                aiReplyDiv.className = 'message message-received';
+                aiReplyDiv.innerHTML = `
+                    Thanks for your message! Is there anything else I can help you with?
+                    <div class="message-time">${getCurrentTime()}</div>
+                `;
+                
+                chatMessages.appendChild(aiReplyDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+        
+        function useAISuggestion(text) {
+            const input = document.getElementById('chat-input');
+            input.value = text;
+        }
+        
+        function getCurrentTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            return `${hours}:${minutes} ${ampm}`;
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial active state
+            document.querySelectorAll('.nav-item')[0].classList.add('active');
+            
+            // Add event listener for Enter key in chat
+            document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Initialize character counter
+            updateCharCounter();
+            
+            // Show welcome notification after 2 seconds
+            setTimeout(() => {
+                showNotification('Welcome to SellFlow!', 'Your dashboard is ready. Start by adding your first product.');
+            }, 2000);
+        });
+        
+        // Character counter for business description
+        function updateCharCounter() {
+            const textarea = document.getElementById('business-description');
+            const counter = document.getElementById('char-counter');
+            const length = textarea.value.length;
+            const maxLength = 300;
+            
+            counter.textContent = `${length} / ${maxLength}`;
+            
+            if (length >= maxLength) {
+                counter.className = 'char-counter danger';
+            } else if (length >= maxLength * 0.9) {
+                counter.className = 'char-counter warning';
+            } else {
+                counter.className = 'char-counter';
+            }
+        }
+        
+        // Image upload handling
+        function triggerImageUpload(type) {
+            const input = document.getElementById(`${type}-input`);
+            if (input) {
+                input.click();
+            }
+        }
+        
+        function handleImageUpload(input, type) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = document.getElementById(`${type}-upload`);
+                    container.classList.add('has-image');
+                    
+                    // Remove existing img if any
+                    const existingImg = container.querySelector('img');
+                    if (existingImg) {
+                        existingImg.remove();
+                    }
+                    
+                    // Add new image
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    container.insertBefore(img, container.firstChild);
+                    
+                    showNotification('Image Uploaded', 'Image has been uploaded successfully');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function removeImage(type) {
+            const container = document.getElementById(`${type}-upload`);
+            const input = document.getElementById(`${type}-input`);
+            const img = container.querySelector('img');
+            
+            if (img) {
+                img.remove();
+            }
+            container.classList.remove('has-image');
+            if (input) {
+                input.value = '';
+            }
+        }
+        
+        // Product upload functionality
+        let uploadedProducts = [];
+        
+        function triggerProductUpload() {
+            document.getElementById('product-image-input').click();
+        }
+        
+        function handleProductUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const productName = document.querySelector('#products-screen input[type="text"]').value || 'New Product';
+                    const productPrice = document.querySelector('#products-screen input[placeholder="0.00"]').value || '$0.00';
+                    const productDesc = document.querySelector('#products-screen textarea[rows="2"]').value || 'Product description';
+                    
+                    // Add to uploaded products
+                    uploadedProducts.unshift({
+                        name: productName,
+                        price: productPrice,
+                        desc: productDesc,
+                        image: e.target.result,
+                        vendor: 'My Store',
+                        vendorLogo: 'MS',
+                        location: 'My Location',
+                        verified: true
+                    });
+                    
+                    // Show preview
+                    const previewDiv = document.getElementById('product-upload-preview');
+                    const previewImg = document.getElementById('preview-image');
+                    previewImg.src = e.target.result;
+                    previewDiv.style.display = 'block';
+                    
+                    // Update product grid
+                    renderUploadedProducts();
+                    
+                    showNotification('Product Uploaded', `${productName} has been uploaded successfully`);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function renderUploadedProducts() {
+            const productGrid = document.getElementById('product-grid');
+            
+            // Clear existing products and add uploaded ones
+            let html = '';
+            
+            uploadedProducts.forEach(product => {
+                html += `
+                    <div class="product-card" onclick="viewStore('${product.vendor}', '${product.location}', ${product.verified}, 'My Business', '1 year', 'Sole Proprietor')">
+                        <div class="product-card-image" style="background-image: url('${product.image}'); background-size: cover; background-position: center;">
+                        </div>
+                        <div class="product-card-content">
+                            <div class="product-card-name">${product.name}</div>
+                            <div class="product-card-desc">${product.desc}</div>
+                            <div class="product-card-price">${product.price}</div>
+                            <div class="product-card-vendor">
+                                <div class="product-card-vendor-logo">${product.vendorLogo}</div>
+                                <div class="product-card-vendor-info">
+                                    <div class="product-card-vendor-name">${product.vendor} ${product.verified ? '<i class="fas fa-check-circle"></i>' : ''}</div>
+                                    <div class="product-card-vendor-location">${product.location}</div>
+                                </div>
+                            </div>
+                            <button class="product-card-view-btn" onclick="event.stopPropagation(); viewStore('${product.vendor}', '${product.location}', ${product.verified}, 'My Business', '1 year', 'Sole Proprietor')">
+                                <i class="fas fa-store"></i> View Store
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add original product cards after uploaded ones
+            const originalProducts = [
+                { name: 'Wireless Headphones', price: '$89.99', desc: 'Noise cancellation, 30-hour battery', vendor: 'TechGear Hub', vendorLogo: 'TG', location: 'Accra, Ghana', verified: true },
+                { name: 'Smartphone Pro', price: '$149.99', desc: '128GB, 6.5" Display, 5G', vendor: 'Ghana Gadgets', vendorLogo: 'GG', location: 'Kumasi, Ghana', verified: true },
+                { name: 'Smart Watch', price: '$29.99', desc: 'Fitness tracker, heart rate monitor', vendor: 'FitLife Ghana', vendorLogo: 'FL', location: 'Accra, Ghana', verified: false },
+                { name: 'Bluetooth Speaker', price: '$45.99', desc: '360° surround sound', vendor: 'Audio Plus', vendorLogo: 'AP', location: 'Takoradi, Ghana', verified: true }
+            ];
+            
+            originalProducts.forEach(product => {
+                html += `
+                    <div class="product-card" onclick="viewStore('${product.vendor}', '${product.location}', ${product.verified}, 'Electronics', '3 years', 'Sole Proprietor')">
+                        <div class="product-card-image" style="background: linear-gradient(135deg, #FFD700 0%, #FFC400 100%);">
+                            <i class="fas fa-headphones"></i>
+                            ${product.name === 'Wireless Headphones' ? '<span class="product-card-badge">In Stock</span>' : ''}
+                            ${product.name === 'Smartphone Pro' ? '<span class="product-card-badge">Best Seller</span>' : ''}
+                        </div>
+                        <div class="product-card-content">
+                            <div class="product-card-name">${product.name}</div>
+                            <div class="product-card-desc">${product.desc}</div>
+                            <div class="product-card-price">${product.price}</div>
+                            <div class="product-card-vendor">
+                                <div class="product-card-vendor-logo">${product.vendorLogo}</div>
+                                <div class="product-card-vendor-info">
+                                    <div class="product-card-vendor-name">${product.vendor} ${product.verified ? '<i class="fas fa-check-circle"></i>' : ''}</div>
+                                    <div class="product-card-vendor-location">${product.location}</div>
+                                </div>
+                            </div>
+                            <button class="product-card-view-btn" onclick="event.stopPropagation(); viewStore('${product.vendor}', '${product.location}', ${product.verified}, 'Electronics', '3 years', 'Sole Proprietor')">
+                                <i class="fas fa-store"></i> View Store
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            productGrid.innerHTML = html;
+        }
+        
+        // View Store functionality
+        const vendorProducts = {
+            'TechGear Hub': [
+                { name: 'Wireless Headphones', price: '$89.99', desc: 'Noise cancellation', icon: 'fa-headphones', gradient: 'linear-gradient(135deg, #FFD700 0%, #FFC400 100%)' },
+                { name: 'USB-C Cable', price: '$12.99', desc: 'Fast charging cable', icon: 'fa-plug', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+                { name: 'Power Bank', price: '$34.99', desc: '10000mAh capacity', icon: 'fa-battery-full', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+                { name: 'Webcam HD', price: '$49.99', desc: '1080p webcam', icon: 'fa-video', gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }
+            ],
+            'Ghana Gadgets': [
+                { name: 'Smartphone Pro', price: '$149.99', desc: '128GB, 5G', icon: 'fa-mobile-alt', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+                { name: 'Tablet 10"', price: '$199.99', desc: 'Android tablet', icon: 'fa-tablet-alt', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+                { name: 'Smart Watch', price: '$59.99', desc: 'Fitness tracker', icon: 'fa-watch', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }
+            ],
+            'FitLife Ghana': [
+                { name: 'Smart Watch', price: '$29.99', desc: 'Fitness tracker', icon: 'fa-watch', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+                { name: 'Yoga Mat', price: '$19.99', desc: 'Premium yoga mat', icon: 'fa-dumbbell', gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+                { name: 'Resistance Bands', price: '$14.99', desc: '5-piece set', icon: 'fa-running', gradient: 'linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)' }
+            ],
+            'Audio Plus': [
+                { name: 'Bluetooth Speaker', price: '$45.99', desc: '360° surround sound', icon: 'fa-volume-up', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+                { name: 'Wireless Earbuds', price: '$39.99', desc: 'True wireless', icon: 'fa-headphones-alt', gradient: 'linear-gradient(135deg, #FFD700 0%, #FFC400 100%)' },
+                { name: 'Soundbar', price: '$89.99', desc: 'Home theater', icon: 'fa-music', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+            ]
+        };
+        
+        function viewStore(name, location, verified, category, years, registration) {
+            // Update vendor info
+            document.getElementById('vendor-name').innerHTML = name + (verified ? ' <span class="vendor-store-verified"><i class="fas fa-check"></i></span>' : '');
+            document.getElementById('vendor-logo').textContent = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('vendor-location').textContent = location;
+            document.getElementById('vendor-category').textContent = category;
+            document.getElementById('vendor-years').textContent = years;
+            document.getElementById('vendor-registration').textContent = registration;
+            
+            // Show/hide verified badge
+            const verifiedBadge = document.getElementById('vendor-verified-badge');
+            if (verified) {
+                verifiedBadge.style.display = 'flex';
+            } else {
+                verifiedBadge.style.display = 'none';
+            }
+            
+            // Render vendor products
+            const productsGrid = document.getElementById('vendor-products-grid');
+            productsGrid.innerHTML = '';
+            
+            const products = vendorProducts[name] || [
+                { name: 'Sample Product', price: '$29.99', desc: 'Product description', icon: 'fa-box', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+            ];
+            
+            products.forEach(product => {
+                productsGrid.innerHTML += `
+                    <div class="product-card" onclick="addToCartFromStore('${product.name}', '${product.price}')">
+                        <div class="product-card-image" style="background: ${product.gradient};">
+                            <i class="fas ${product.icon}"></i>
+                        </div>
+                        <div class="product-card-content">
+                            <div class="product-card-name">${product.name}</div>
+                            <div class="product-card-desc">${product.desc}</div>
+                            <div class="product-card-price">${product.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Show modal
+            document.getElementById('vendor-store-profile').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeStoreProfile() {
+            document.getElementById('vendor-store-profile').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function addToCartFromStore(productName, price) {
+            showNotification('Added to Cart', `${productName} - ${price} added to your cart`);
+        }
+        
+        // Product Slider Functions
+        let sliderProductCount = 0;
+        let maxProducts = 10;
+        
+        function openAddProductSlider() {
+            if (sliderProductCount >= maxProducts) {
+                showNotification('Limit Reached', 'You can only add up to 10 products');
+                return;
+            }
+            
+            // Clear previous form data
+            document.getElementById('slider-product-name').value = '';
+            document.getElementById('slider-product-price').value = '';
+            document.getElementById('slider-product-stock').value = '50';
+            document.getElementById('slider-product-desc').value = '';
+            document.getElementById('slider-product-full-desc').value = '';
+            document.getElementById('slider-product-hashtags').value = '';
+            document.getElementById('slider-product-preview').style.display = 'none';
+            
+            // Update product number
+            sliderProductCount++;
+            document.getElementById('slider-product-number').textContent = `(${sliderProductCount})`;
+            
+            // Show slider
+            document.getElementById('product-slider-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAddProductSlider() {
+            document.getElementById('product-slider-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function triggerSliderProductUpload() {
+            document.getElementById('slider-product-image-input').click();
+        }
+        
+        function handleSliderProductUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.getElementById('slider-product-preview');
+                    const previewImg = document.getElementById('slider-preview-image');
+                    previewImg.src = e.target.result;
+                    previewDiv.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function saveProduct() {
+            const name = document.getElementById('slider-product-name').value.trim();
+            const price = document.getElementById('slider-product-price').value.trim();
+            const desc = document.getElementById('slider-product-desc').value.trim();
+            const previewImg = document.getElementById('slider-preview-image').src;
+            
+            if (!name) {
+                showNotification('Error', 'Please enter a product name');
+                return;
+            }
+            
+            if (!price) {
+                showNotification('Error', 'Please enter a product price');
+                return;
+            }
+            
+            // Get business info from form
+            const businessName = document.querySelector('#products-screen input[value="TechGear Hub"]').value || 'My Store';
+            
+            // Add to uploaded products
+            uploadedProducts.unshift({
+                name: name,
+                price: price,
+                desc: desc,
+                image: previewImg || '',
+                vendor: businessName,
+                vendorLogo: businessName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase(),
+                location: 'My Location',
+                verified: true
+            });
+            
+            // Update product grid
+            renderUploadedProducts();
+            updateProductCount();
+            
+            // Close slider
+            closeAddProductSlider();
+            
+            showNotification('Success', `${name} added to your products!`);
+        }
+        
+        function updateProductCount() {
+            const count = uploadedProducts.length;
+            const display = document.getElementById('product-count-display');
+            display.textContent = `Products added: ${count} / ${maxProducts}`;
+            
+            // Show/hide empty message
+            const emptyMsg = document.getElementById('empty-products-message');
+            const grid = document.getElementById('product-grid');
+            
+            if (count > 0) {
+                emptyMsg.style.display = 'none';
+                grid.style.display = 'grid';
+            } else {
+                emptyMsg.style.display = 'block';
+                grid.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
