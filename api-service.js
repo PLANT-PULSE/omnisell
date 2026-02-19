@@ -284,13 +284,14 @@ function logoutUser() {
 
 /**
  * Get current user profile
+ * Endpoint: GET /api/auth/profile/
  * @returns {Promise<Object>} - User profile data
  */
 async function getUserProfile() {
     console.log('Fetching user profile...');
     
     try {
-        const response = await fetch(`${API_URL}/api/accounts/user/`, {
+        const response = await fetch(`${API_URL}/api/auth/profile/`, {
             method: 'GET',
             headers: getAuthHeaders(),
         });
@@ -307,6 +308,7 @@ async function getUserProfile() {
 
 /**
  * Update user profile
+ * Endpoint: PATCH /api/auth/profile/
  * @param {Object} profileData - Profile data to update
  * @returns {Promise<Object>} - Updated profile data
  */
@@ -314,7 +316,7 @@ async function updateUserProfile(profileData) {
     console.log('Updating user profile...');
     
     try {
-        const response = await fetch(`${API_URL}/api/accounts/profile/`, {
+        const response = await fetch(`${API_URL}/api/auth/profile/`, {
             method: 'PATCH',
             headers: getAuthHeaders(),
             body: JSON.stringify(profileData),
@@ -331,14 +333,39 @@ async function updateUserProfile(profileData) {
 
 
 /**
+ * Get user details
+ * Endpoint: GET /api/auth/user/
+ * @returns {Promise<Object>} - User data
+ */
+async function getUserDetails() {
+    console.log('Fetching user details...');
+    
+    try {
+        const response = await fetch(`${API_URL}/api/auth/user/`, {
+            method: 'GET',
+            headers: getAuthHeaders(),
+        });
+        
+        const data = await handleResponse(response);
+        console.log('User details fetched:', data);
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch user details:', error.message);
+        throw error;
+    }
+}
+
+
+/**
  * Get user activities
+ * Endpoint: GET /api/auth/activities/
  * @returns {Promise<Array>} - User activities
  */
 async function getUserActivities() {
     console.log('Fetching user activities...');
     
     try {
-        const response = await fetch(`${API_URL}/api/accounts/activities/`, {
+        const response = await fetch(`${API_URL}/api/auth/activities/`, {
             method: 'GET',
             headers: getAuthHeaders(),
         });
@@ -957,6 +984,7 @@ async function markNotificationRead(notificationId) {
 
 /**
  * Get sales analytics
+ * Endpoint: GET /api/analytics/
  * @param {Object} [params] - Query parameters
  * @param {string} [params.period] - Period (day, week, month, year)
  * @returns {Promise<Object>} - Analytics data
@@ -969,7 +997,7 @@ async function getAnalytics(params = {}) {
         if (params.period) queryParams.append('period', params.period);
         
         const queryString = queryParams.toString();
-        const url = `${API_URL}/api/analytics/sales/${queryString ? '?' + queryString : ''}`;
+        const url = `${API_URL}/api/analytics/${queryString ? '?' + queryString : ''}`;
         
         const response = await fetch(url, {
             method: 'GET',
@@ -1068,6 +1096,32 @@ async function sendMessage(conversationId, message) {
 // =============================================================================
 
 /**
+ * Generate content using AI
+ * Endpoint: POST /api/ai/generate/
+ * @param {Object} data - Data for AI generation (type, product_data, etc.)
+ * @returns {Promise<Object>} - Generated content
+ */
+async function generateContent(data) {
+    console.log('Generating AI content...');
+    
+    try {
+        const response = await fetch(`${API_URL}/api/ai/generate/`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(data),
+        });
+        
+        const result = await handleResponse(response);
+        console.log('AI content generated:', result);
+        return result;
+    } catch (error) {
+        console.error('Failed to generate AI content:', error.message);
+        throw error;
+    }
+}
+
+
+/**
  * Generate product description using AI
  * @param {Object} data - Product data for description generation
  * @returns {Promise<Object>} - Generated description
@@ -1076,10 +1130,13 @@ async function generateProductDescription(data) {
     console.log('Generating product description...');
     
     try {
-        const response = await fetch(`${API_URL}/api/ai/generate-description/`, {
+        const response = await fetch(`${API_URL}/api/ai/generate/`, {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                type: 'product_description',
+                ...data
+            }),
         });
         
         const result = await handleResponse(response);
@@ -1101,10 +1158,13 @@ async function generateSocialPost(data) {
     console.log('Generating social post...');
     
     try {
-        const response = await fetch(`${API_URL}/api/ai/generate-post/`, {
+        const response = await fetch(`${API_URL}/api/ai/generate/`, {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                type: 'social_post',
+                ...data
+            }),
         });
         
         const result = await handleResponse(response);
@@ -1118,7 +1178,38 @@ async function generateSocialPost(data) {
 
 
 /**
+ * Chat with AI assistant
+ * Endpoint: POST /api/ai/chat/
+ * @param {string} message - User message
+ * @param {string} [conversationId] - Optional conversation ID
+ * @returns {Promise<Object>} - AI response
+ */
+async function chatWithAI(message, conversationId = null) {
+    console.log('Chatting with AI...');
+    
+    try {
+        const response = await fetch(`${API_URL}/api/ai/chat/`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                message: message,
+                conversation_id: conversationId
+            }),
+        });
+        
+        const result = await handleResponse(response);
+        console.log('AI chat response:', result);
+        return result;
+    } catch (error) {
+        console.error('Failed to chat with AI:', error.message);
+        throw error;
+    }
+}
+
+
+/**
  * Analyze product performance
+ * Endpoint: GET /api/analytics/{id}/
  * @param {number} productId - Product ID
  * @returns {Promise<Object>} - Performance analysis
  */
@@ -1126,7 +1217,7 @@ async function analyzeProductPerformance(productId) {
     console.log('Analyzing product performance:', productId);
     
     try {
-        const response = await fetch(`${API_URL}/api/ai/analyze-product/${productId}/`, {
+        const response = await fetch(`${API_URL}/api/analytics/${productId}/`, {
             method: 'GET',
             headers: getAuthHeaders(),
         });
@@ -1147,13 +1238,14 @@ async function analyzeProductPerformance(productId) {
 
 /**
  * Get connected platforms
+ * Endpoint: GET /api/auth/platforms/
  * @returns {Promise<Array>} - Connected platforms
  */
 async function getConnectedPlatforms() {
     console.log('Fetching connected platforms...');
     
     try {
-        const response = await fetch(`${API_URL}/api/accounts/platforms/`, {
+        const response = await fetch(`${API_URL}/api/auth/platforms/`, {
             method: 'GET',
             headers: getAuthHeaders(),
         });
@@ -1170,6 +1262,7 @@ async function getConnectedPlatforms() {
 
 /**
  * Connect a social platform
+ * Endpoint: POST /api/auth/platforms/
  * @param {string} platform - Platform name (facebook, instagram, tiktok, twitter)
  * @param {string} authToken - OAuth or access token
  * @returns {Promise<Object>} - Connection result
@@ -1178,7 +1271,7 @@ async function connectPlatform(platform, authToken) {
     console.log('Connecting platform:', platform);
     
     try {
-        const response = await fetch(`${API_URL}/api/accounts/platforms/`, {
+        const response = await fetch(`${API_URL}/api/auth/platforms/`, {
             method: 'POST',
             headers: getAuthHeaders(),
             body: JSON.stringify({
@@ -1199,6 +1292,7 @@ async function connectPlatform(platform, authToken) {
 
 /**
  * Disconnect a social platform
+ * Endpoint: DELETE /api/auth/platforms/{id}/
  * @param {number} platformId - Platform connection ID
  * @returns {Promise<void>}
  */
@@ -1206,7 +1300,7 @@ async function disconnectPlatform(platformId) {
     console.log('Disconnecting platform:', platformId);
     
     try {
-        const response = await fetch(`${API_URL}/api/accounts/platforms/${platformId}/`, {
+        const response = await fetch(`${API_URL}/api/auth/platforms/${platformId}/`, {
             method: 'DELETE',
             headers: getAuthHeaders(),
         });
@@ -1229,13 +1323,14 @@ const apiService = {
     // Authentication
     registerUser,
     loginUser,
+    logoutUser,
     refreshToken,
     verifyToken,
-    logoutUser,
     
     // User Profile
     getUserProfile,
     updateUserProfile,
+    getUserDetails,
     getUserActivities,
     
     // Products
@@ -1275,6 +1370,7 @@ const apiService = {
     
     // Analytics
     getAnalytics,
+    analyzeProductPerformance,
     
     // Chat
     getConversations,
@@ -1282,9 +1378,10 @@ const apiService = {
     sendMessage,
     
     // AI Services
+    generateContent,
     generateProductDescription,
     generateSocialPost,
-    analyzeProductPerformance,
+    chatWithAI,
     
     // Social Connections
     getConnectedPlatforms,
